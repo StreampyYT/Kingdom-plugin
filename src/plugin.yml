@@ -1,0 +1,4 @@
+name: Kingdom
+main: me.Streampy.kingdom.Main
+version: 1.0
+commands:
