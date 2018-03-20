@@ -2,3 +2,7 @@ name: Kingdom
 main: me.Streampy.kingdom.Main
 version: 1.0
 commands:
+  kingdom:
+    description: De kingdom commands
+  kd:
+    description: De kingdom commands
