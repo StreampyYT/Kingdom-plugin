@@ -9,10 +9,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.Streampy.kingdom.Main;
-import me.Streampy.kingdom.library.functions;
 import me.Streampy.kingdom.records.records;
-import me.Streampy.kingdom.records.records.kingdomMemberRec;
 import me.Streampy.kingdom.records.records.kingdomRec;
+import me.Streampy.kingdom.subcommands.Create;
+import me.Streampy.kingdom.subcommands.Info;
+import me.Streampy.kingdom.subcommands.Join;
+import me.Streampy.kingdom.subcommands.List;
 
 public class kingdom implements CommandExecutor {
 
@@ -22,77 +24,34 @@ public class kingdom implements CommandExecutor {
 	
 	static ArrayList<kingdomRec> kingdomsList = records.kingdomsList;
 
+	Create create = new Create();
+	Info info = new Info();
+	List list = new List();
+	Join join = new Join();
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			if (player.hasPermission("kingdom")) {
+			if (player.hasPermission("kingdom.help")) {
 				if (args.length == 0) {
-					//help menu
+					menu(player, cmd);
 				}else {
 					switch(args[0]) {
 						case "create": 
-							if (args.length == 2) {
-								for (kingdomRec kingdomRecord : kingdomsList) {
-									if (kingdomRecord.name.toLowerCase().equals(args[1].toLowerCase())) {
-										player.sendMessage(ChatColor.RED + "Deze naam word al gebruikt!");
-										return false;
-									}
-								}
-								
-								functions.createKingdom(args[1], player);
-								player.sendMessage("Kingdom is created");
-							}else {
-								player.sendMessage("/kingdom create <name>");
-							}
+							create.onCommand(sender, cmd, label, args);
 							break; 
 						case "list": 
-							player.sendMessage(ChatColor.GRAY + "===== " + ChatColor.GREEN + "Kingdom" + ChatColor.GRAY + " =====");
-							for (kingdomRec kingdomRecord : kingdomsList) {
-								player.sendMessage(ChatColor.GRAY + "- " + ChatColor.GREEN  + kingdomRecord.name);
-							}
-							player.sendMessage(ChatColor.GRAY + "==================");
+							list.onCommand(sender, cmd, label, args);
+							break;
 						case "info":
-							if (args.length == 2) {
-								player.sendMessage(ChatColor.GRAY + "==================");
-								for (kingdomRec kingdomRecord : kingdomsList) {
-									if (kingdomRecord.name.toLowerCase().equals(args[1].toLowerCase())) {
-										
-										player.sendMessage("name: " + kingdomRecord.name);
-										if (kingdomRecord.king == null) {
-											player.sendMessage("king: " + ChatColor.RED + "No king!");
-										}else {
-											player.sendMessage("king: " + kingdomRecord.king.name);
-										}
-										if (kingdomRecord.queen == null) {
-											player.sendMessage("queen: " + ChatColor.RED + "No queen!");
-										}else {
-											player.sendMessage("queen: " + kingdomRecord.queen.name);
-										}
-										
-										String members = "";
-										for (kingdomMemberRec member : kingdomRecord.members) {
-											if (member.player != null) {
-												members = ", " + member.player.name;
-											}
-										}
-										if (members.length() >= 1) {
-											player.sendMessage("members: " + members.substring(1));
-										}else {
-											player.sendMessage("members: " + ChatColor.RED + "No members!");
-										}
-										player.sendMessage(ChatColor.GRAY + "==================");
-										return false;
-									}
-								}
-								
-								player.sendMessage(ChatColor.RED + "Geen kingdom met die naam gevonden!");
-								player.sendMessage(ChatColor.GRAY + "==================");
-							}else {
-								player.sendMessage("/kingdom info <name>");
-							}
+							info.onCommand(sender, cmd, label, args);
+							break;
+						case "join":
+							join.onCommand(sender, cmd, label, args);
+							break;
 						default: 
-							//help menu
+							menu(player, cmd);
 					}
 				}
 			}else {
@@ -101,5 +60,17 @@ public class kingdom implements CommandExecutor {
 		}
 		return false;
 	}
-
+	
+	public void menu(Player player, Command cmd) {
+		player.sendMessage(commandMessage(cmd, player, "help", "kingdom.help"));
+		player.sendMessage(commandMessage(cmd, player, "list", "kingdom.list"));
+		player.sendMessage(commandMessage(cmd, player, "info <name>", "kingdom.info"));
+	}
+	
+	public String commandMessage(Command cmd, Player player, String command, String permission) {
+		if (player.hasPermission(permission)) {
+			return ChatColor.GRAY + "/" + cmd.getName() + " " + ChatColor.GREEN + command;
+		}
+		return null;
+	}
 }

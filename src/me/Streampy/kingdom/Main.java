@@ -3,6 +3,7 @@ package me.Streampy.kingdom;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.Streampy.kingdom.commands.kingdom;
+import me.Streampy.kingdom.library.EventsHandler;
 import me.Streampy.kingdom.library.functions;
 
 public class Main extends JavaPlugin {
@@ -12,6 +13,8 @@ public class Main extends JavaPlugin {
 		
 		getCommand("kingdom").setExecutor(new kingdom(this));
 		getCommand("kd").setExecutor(new kingdom(this));
+		
+		new EventsHandler(this);
 	}
 	
 	public void onDisable() {

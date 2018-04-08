@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.bukkit.Location;
 
+import me.Streampy.kingdom.library.Status;
+
 public class records {
 
 	public static class kingdomRec {
@@ -13,6 +15,7 @@ public class records {
 		public playerRec king;
 		public playerRec queen;
 		public Location spawn;
+		public Status status;
 		public ArrayList<kingdomMemberRec> members = new ArrayList<kingdomMemberRec>();
 	}
 	

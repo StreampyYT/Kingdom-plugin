@@ -63,7 +63,6 @@ public class functions {
 					
 					for (int b = 0; b < kingdom.members.size(); b++) {
 						kingdomMemberRec kingdomMember = kingdom.members.get(b);
-						kingdomConfig.set("kingdom." + a + ".member." + b + ".name", kingdomMember.player.name);
 						kingdomConfig.set("kingdom." + a + ".member." + b + ".uuid", kingdomMember.player.uuid);
 						kingdomConfig.set("kingdom." + a + ".member." + b + ".rank", kingdomMember.rank);
 					}
@@ -87,7 +86,11 @@ public class functions {
 					playerRec player = playersList.get(a);
 					playerConfig.set("player." + a + ".name", player.name);
 					playerConfig.set("player." + a + ".uuid", player.uuid);
-					playerConfig.set("player." + a + ".kingdom", player.kingdom.name);
+					if (player.kingdom != null) {
+						playerConfig.set("player." + a + ".kingdom", player.kingdom.name);
+					}else {
+						playerConfig.set("player." + a + ".kingdom", null);
+					}
 					playerConfig.save(playerFile);
 				}
 				
@@ -129,10 +132,45 @@ public class functions {
 	
 	private static void loadKingdomMembers() {
 		//Leden + queen + king
+		if (kingdomFile.exists()) {
+			try {
+				kingdomConfig.load(kingdomFile);
+				for (int a = 0; kingdomConfig.contains("kingdom." + a); a++) {
+					kingdomRec kingdomRecord = getKingdomRecord(kingdomConfig.getString("kingdom." + a + ".name"));
+					for (int b = 0; kingdomConfig.contains("kingdom." + a + ".member." + b); b++) {
+						
+						kingdomMemberRec kingdomMemberRecord = new kingdomMemberRec();
+						kingdomRecord.members.add(kingdomMemberRecord);
+						
+						playerRec playerRecord = getPlayerRecord(kingdomConfig.getString("kingdom." + a + ".member." + b + ".uuid"));
+						
+						kingdomMemberRecord.player = playerRecord;
+						kingdomMemberRecord.rank = kingdomConfig.getString("kingdom." + a + ".member." + b + ".rank");
+						
+					}
+				}
+			}catch(Exception ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 	
 	private static void loadPlayerFile() {
-
+		if (playerFile.exists()) {
+			try {
+				playerConfig.load(playerFile);
+				for (int a = 0; playerConfig.contains("player." + a); a++) {
+					playerRec playerRecord = new playerRec();
+					playersList.add(playerRecord);
+					
+					playerRecord.name = playerConfig.getString("player." + a + ".name");
+					playerRecord.uuid = playerConfig.getString("player." + a + ".uuid");
+					playerRecord.kingdom = getKingdomRecord(playerConfig.getString("player." + a + ".kingdom"));
+				}
+			}catch(Exception ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 	
 	public static void createKingdom(String name, Player player) {
@@ -148,6 +186,78 @@ public class functions {
 		Location loc = new Location(player.getWorld(), 0, 0, 0, (float) 0,(float) 0);
 		
 		kingdomRecord.spawn = loc;
+	}
+	
+	public static void createPlayer(Player player) {
+		playerRec playerRecord = new playerRec();
+		playersList.add(playerRecord);
+		
+		playerRecord.name = player.getName();
+		playerRecord.uuid = player.getUniqueId().toString();
+		playerRecord.kingdom = null;
+	}
+	
+	public static void createPlayer(Player player, kingdomRec kingdomRecord) {
+		playerRec playerRecord = new playerRec();
+		playersList.add(playerRecord);
+		
+		playerRecord.name = player.getName();
+		playerRecord.uuid = player.getUniqueId().toString();
+		playerRecord.kingdom = kingdomRecord;
+	}
+	
+	public static void createPlayer(String name, String uuid) {
+		playerRec playerRecord = new playerRec();
+		playersList.add(playerRecord);
+		
+		playerRecord.name = name;
+		playerRecord.uuid = uuid;
+		playerRecord.kingdom = null;
+	}
+	
+	public static void createPlayer(String name, String uuid, kingdomRec kingdomRecord) {
+		playerRec playerRecord = new playerRec();
+		playersList.add(playerRecord);
+		
+		playerRecord.name = name;
+		playerRecord.uuid = uuid;
+		playerRecord.kingdom = kingdomRecord;
+	}
+	
+	public static boolean playerAlreadyCreated(Player player) {
+		for (playerRec playerRecord : playersList) {
+			if (playerRecord.uuid.equals(player.getUniqueId().toString())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean playerAlreadyCreated(String uuid) {
+		for (playerRec playerRecord : playersList) {
+			if (playerRecord.uuid.equals(uuid)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static playerRec getPlayerRecord(String uuid) {
+		for (playerRec playerRecord : playersList) {
+			if (playerRecord.uuid.equals(uuid)) {
+				return playerRecord;
+			}
+		}
+		return null;
+	}
+	
+	public static kingdomRec getKingdomRecord(String name) {
+		for (kingdomRec kingdomRecord : kingdomsList) {
+			if (kingdomRecord.name.equals(name)) {
+				return kingdomRecord;
+			}
+		}
+		return null;
 	}
 	
 	
