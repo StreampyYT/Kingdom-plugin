@@ -14,6 +14,8 @@ import me.Streampy.kingdom.records.records.kingdomRec;
 import me.Streampy.kingdom.subcommands.Create;
 import me.Streampy.kingdom.subcommands.Info;
 import me.Streampy.kingdom.subcommands.Join;
+import me.Streampy.kingdom.subcommands.Kick;
+import me.Streampy.kingdom.subcommands.Leave;
 import me.Streampy.kingdom.subcommands.List;
 
 public class kingdom implements CommandExecutor {
@@ -28,6 +30,8 @@ public class kingdom implements CommandExecutor {
 	Info info = new Info();
 	List list = new List();
 	Join join = new Join();
+	Leave leave = new Leave();
+	Kick kick = new Kick();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -50,6 +54,12 @@ public class kingdom implements CommandExecutor {
 						case "join":
 							join.onCommand(sender, cmd, label, args);
 							break;
+						case "leave":
+							leave.onCommand(sender, cmd, label, args);
+							break;
+						case "kick":
+							kick.onCommand(sender, cmd, label, args);
+							break;
 						default: 
 							menu(player, cmd);
 					}
@@ -65,6 +75,9 @@ public class kingdom implements CommandExecutor {
 		player.sendMessage(commandMessage(cmd, player, "help", "kingdom.help"));
 		player.sendMessage(commandMessage(cmd, player, "list", "kingdom.list"));
 		player.sendMessage(commandMessage(cmd, player, "info <name>", "kingdom.info"));
+		player.sendMessage(commandMessage(cmd, player, "join <name>", "kingdom.join"));
+		player.sendMessage(commandMessage(cmd, player, "leave", "kingdom.leave"));
+		player.sendMessage(commandMessage(cmd, player, "kick <player>", "kingdom.kick"));
 	}
 	
 	public String commandMessage(Command cmd, Player player, String command, String permission) {

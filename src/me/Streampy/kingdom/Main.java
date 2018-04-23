@@ -1,5 +1,7 @@
 package me.Streampy.kingdom;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.Streampy.kingdom.commands.kingdom;
@@ -15,6 +17,13 @@ public class Main extends JavaPlugin {
 		getCommand("kd").setExecutor(new kingdom(this));
 		
 		new EventsHandler(this);
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			if (!functions.playerAlreadyCreated(player)) {
+				functions.createPlayer(player);
+			}
+		}
+		
 	}
 	
 	public void onDisable() {

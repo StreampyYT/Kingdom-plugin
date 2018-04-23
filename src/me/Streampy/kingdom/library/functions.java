@@ -61,6 +61,7 @@ public class functions {
 					kingdomConfig.set("kingdom." + a + ".spawn.yaw", kingdom.spawn.getYaw());
 					kingdomConfig.set("kingdom." + a + ".spawn.pitch", kingdom.spawn.getPitch());
 					
+					kingdomConfig.set("kingdom." + a + ".member", null);
 					for (int b = 0; b < kingdom.members.size(); b++) {
 						kingdomMemberRec kingdomMember = kingdom.members.get(b);
 						kingdomConfig.set("kingdom." + a + ".member." + b + ".uuid", kingdomMember.player.uuid);
@@ -240,6 +241,46 @@ public class functions {
 			}
 		}
 		return false;
+	}
+	
+	public static kingdomRec getPlayerKingdomRecord(playerRec player) {
+		for (playerRec playerRecords : playersList) {
+			if (playerRecords.name.equals(player.name)) {
+				return player.kingdom;
+			}
+		}
+		return null;
+	}
+	
+	public static boolean isPlayerInKingdom(playerRec player) {
+		for (playerRec playerRecords : playersList) {
+			if (playerRecords.name.equals(player.name)) {
+				if (player.kingdom != null) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public static void setPlayerInKingdom(kingdomRec kingdom, playerRec player) {
+		//Nog geen ranks!
+		kingdomMemberRec kingdomMember = new kingdomMemberRec();
+		kingdom.members.add(kingdomMember);
+		kingdomMember.player = player;
+		kingdomMember.rank = null;
+		player.kingdom = kingdom;
+	}
+	
+	public static void removePlayerFromKingdom(kingdomRec kingdom, playerRec player) {
+		if (kingdom == null || player == null) return;
+		for (int a = 0; a < kingdom.members.size(); a++) {
+			kingdomMemberRec kingdomMember = kingdom.members.get(a);
+			if (kingdomMember.player.equals(player)) {
+				kingdom.members.remove(a);
+				player.kingdom = null;
+			}
+		}
 	}
 	
 	public static playerRec getPlayerRecord(String uuid) {
