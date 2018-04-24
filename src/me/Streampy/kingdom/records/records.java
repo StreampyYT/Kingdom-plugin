@@ -11,7 +11,6 @@ public class records {
 	public static class kingdomRec {
 		public String name;
 		public String prefix;
-		public String suffix;
 		public playerRec king;
 		public playerRec queen;
 		public Location spawn;

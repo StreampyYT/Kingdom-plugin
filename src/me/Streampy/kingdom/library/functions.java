@@ -50,7 +50,6 @@ public class functions {
 					kingdomRec kingdom = kingdomsList.get(a);
 					kingdomConfig.set("kingdom." + a + ".name", kingdom.name);
 					kingdomConfig.set("kingdom." + a + ".prefix", kingdom.prefix);
-					kingdomConfig.set("kingdom." + a + ".suffix", kingdom.suffix);
 					kingdomConfig.set("kingdom." + a + ".king", kingdom.king);
 					kingdomConfig.set("kingdom." + a + ".queen", kingdom.queen);
 					
@@ -111,7 +110,6 @@ public class functions {
 					
 					kingdomRecord.name = kingdomConfig.getString("kingdom." + a + ".name");
 					kingdomRecord.prefix = kingdomConfig.getString("kingdom." + a + ".prefix");
-					kingdomRecord.suffix = kingdomConfig.getString("kingdom." + a + ".suffix");
 					
 					World world = Bukkit.getWorld(kingdomConfig.getString("kingdom." + a + ".spawn.world"));
 					double x = kingdomConfig.getInt("kingdom." + a + ".spawn.x");
@@ -180,7 +178,6 @@ public class functions {
 		
 		kingdomRecord.name = name;
 		kingdomRecord.prefix = "";
-		kingdomRecord.suffix = "";
 		kingdomRecord.king = null;
 		kingdomRecord.queen = null;
 		
